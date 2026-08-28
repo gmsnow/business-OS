@@ -224,7 +224,10 @@ export default function HomePage() {
                     <SplitText text="في مكان واحد" className="inline" />
                   ) : (
                     "في مكان واحد"
-                  )}
+                  )}{" "}
+                  <span className="text-gradient">
+                    {mounted ? <TextScramble text="حول العالم" speed={25} /> : "حول العالم"}
+                  </span>
                 </h1>
               </ScrollReveal>
 
