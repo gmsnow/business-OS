@@ -181,7 +181,7 @@ export default function HomePage() {
           {/* ═══════════════════════════════════════════════════════
               HERO
           ═══════════════════════════════════════════════════════ */}
-          <section className="relative isolate flex min-h-screen items-center justify-center">
+          <section className="relative isolate flex min-h-screen items-center overflow-hidden">
             <FloatingParticles />
             <HeroGlow />
 
@@ -193,10 +193,10 @@ export default function HomePage() {
               <div className="absolute inset-0 dot-grid text-foreground/[0.02]" />
             </div>
 
-            {/* Live 3D WebGL core (tech) */}
+            {/* Live 3D WebGL wallpaper — the globe sits on the left */}
             <Hero3D />
 
-            <div className="mx-auto max-w-7xl px-6 pt-32 pb-20 text-center">
+            <div className="pointer-events-none mx-auto w-full max-w-7xl select-none px-6 pt-32 pb-20 text-center lg:pt-36 lg:text-start">
               <ScrollReveal delay={0} direction="up" distance={40}>
                 <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm">
                   <Sparkles className="h-4 w-4" />
@@ -205,7 +205,7 @@ export default function HomePage() {
               </ScrollReveal>
 
               <ScrollReveal delay={100} direction="up" distance={50}>
-                <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[1.12] tracking-tight sm:text-6xl md:text-[5.2rem]" style={{ perspective: "1000px" }}>
+                <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[1.12] tracking-tight sm:text-6xl md:text-[4.8rem] lg:mx-0" style={{ perspective: "1000px" }}>
                   {mounted ? (
                     <SplitText text="كل ما تحتاجه لإدارة" className="inline" />
                   ) : (
@@ -220,26 +220,21 @@ export default function HomePage() {
                     </svg>
                   </span>
                   <br />
-                  {mounted ? (
-                    <SplitText text="في مكان واحد" className="inline" />
-                  ) : (
-                    "في مكان واحد"
-                  )}{" "}
-                  <span className="text-gradient">
-                    {mounted ? <TextScramble text="حول العالم" speed={25} /> : "حول العالم"}
+                  <span className="text-white">
+                    {mounted ? <TextScramble text="من أي مكان في العالم" speed={25} /> : "من أي مكان في العالم"}
                   </span>
                 </h1>
               </ScrollReveal>
 
               <ScrollReveal delay={200} direction="up" distance={50}>
-                <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+                <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl lg:mx-0">
                   نظام متكامل لإدارة متجرك أو مؤسستك — مخزون، مبيعات، مشتريات، مالية،
                   ونقاط بيع. متعدد المستأجرين ويدعم الهوية البصرية الخاصة بك.
                 </p>
               </ScrollReveal>
 
               <ScrollReveal delay={300} direction="up" distance={40}>
-                <div className="mt-12 flex items-center justify-center">
+                <div className="pointer-events-auto mt-12 flex items-center justify-center lg:justify-start">
                   <MagneticButton strength={0.15}>
                     <Link href="/systems" className="group relative inline-flex items-center gap-2.5 rounded-2xl bg-primary px-10 py-4 text-base font-bold text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:shadow-2xl hover:shadow-primary/30 hover:brightness-110 active:scale-[0.98]">
                       <Zap className="h-5 w-5" />
@@ -252,7 +247,7 @@ export default function HomePage() {
               </ScrollReveal>
 
               <ScrollReveal delay={400} direction="up" distance={30}>
-                <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+                <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground lg:justify-start">
                   {["مجاني للبدء", "بدون بطاقة ائتمان", "إعداد في دقائق"].map((t) => (
                     <span key={t} className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -263,7 +258,7 @@ export default function HomePage() {
               </ScrollReveal>
 
               <ScrollReveal delay={800} direction="up" distance={20}>
-                <div className="mt-16 flex justify-center">
+                <div className="pointer-events-auto mt-16 flex justify-center lg:justify-start">
                   <MagneticButton strength={0.4}>
                     <div className="flex flex-col items-center gap-2 text-muted-foreground/40 hover:text-primary transition-colors">
                       <span className="text-xs">اكتشف المزيد</span>
