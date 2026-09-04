@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useState, useEffect, useRef, useSyncExternalStore } from "react";
+import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import {
   Package, ShoppingCart, Receipt, Wallet, Monitor, BarChart3,
   Shield, Globe, ArrowLeft, CheckCircle2, Sparkles, Zap, Users,
@@ -147,6 +147,8 @@ function HeroGlow() {
 
 export default function HomePage() {
   const mounted = useIsMounted();
+  const [earthReady, setEarthReady] = useState(false);
+  const onEarthReady = useCallback(() => setEarthReady(true), []);
 
   return (
     <div className="noise-overlay">
@@ -163,7 +165,7 @@ export default function HomePage() {
                 <div className="relative flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden shadow-lg shadow-primary/30 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-primary/40 group-hover:scale-110">
                   <img src="/icons/BO.PNG" alt="Business OS" className="h-full w-full object-contain" />
                 </div>
-                <span className="text-lg font-bold tracking-tight">بيزنس أو إس</span>
+                <span className="text-lg font-bold tracking-tight">Business OS</span>
               </Link>
               <div className="flex items-center gap-2">
                 <Link href="/signin" className="rounded-xl px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
@@ -194,9 +196,11 @@ export default function HomePage() {
             </div>
 
             {/* Live 3D WebGL wallpaper — the globe sits on the left */}
-            <Hero3D />
+            <Hero3D onReady={onEarthReady} />
 
-            <div className="pointer-events-none mx-auto w-full max-w-7xl select-none px-6 pt-32 pb-20 text-center lg:pt-36 lg:text-start">
+            {/* Hero copy — hidden until the Earth is controllable */}
+            {earthReady && (
+            <div className="pointer-events-none mx-auto w-full max-w-7xl select-none px-6 pt-32 pb-20 text-center lg:pt-36 animate-fade-in-up">
               <ScrollReveal delay={0} direction="up" distance={40}>
                 <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm">
                   <Sparkles className="h-4 w-4" />
@@ -205,7 +209,7 @@ export default function HomePage() {
               </ScrollReveal>
 
               <ScrollReveal delay={100} direction="up" distance={50}>
-                <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[1.12] tracking-tight sm:text-6xl md:text-[4.8rem] lg:mx-0" style={{ perspective: "1000px" }}>
+                <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[1.12] tracking-tight sm:text-6xl md:text-[4.8rem]" style={{ perspective: "1000px" }}>
                   {mounted ? (
                     <SplitText text="كل ما تحتاجه لإدارة" className="inline" />
                   ) : (
@@ -227,14 +231,14 @@ export default function HomePage() {
               </ScrollReveal>
 
               <ScrollReveal delay={200} direction="up" distance={50}>
-                <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl lg:mx-0">
+                <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
                   نظام متكامل لإدارة متجرك أو مؤسستك — مخزون، مبيعات، مشتريات، مالية،
                   ونقاط بيع. متعدد المستأجرين ويدعم الهوية البصرية الخاصة بك.
                 </p>
               </ScrollReveal>
 
               <ScrollReveal delay={300} direction="up" distance={40}>
-                <div className="pointer-events-auto mt-12 flex items-center justify-center lg:justify-start">
+                <div className="pointer-events-auto mt-12 flex items-center justify-center">
                   <MagneticButton strength={0.15}>
                     <Link href="/systems" className="group relative inline-flex items-center gap-2.5 rounded-2xl bg-primary px-10 py-4 text-base font-bold text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:shadow-2xl hover:shadow-primary/30 hover:brightness-110 active:scale-[0.98]">
                       <Zap className="h-5 w-5" />
@@ -247,7 +251,7 @@ export default function HomePage() {
               </ScrollReveal>
 
               <ScrollReveal delay={400} direction="up" distance={30}>
-                <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground lg:justify-start">
+                <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
                   {["مجاني للبدء", "بدون بطاقة ائتمان", "إعداد في دقائق"].map((t) => (
                     <span key={t} className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -258,7 +262,7 @@ export default function HomePage() {
               </ScrollReveal>
 
               <ScrollReveal delay={800} direction="up" distance={20}>
-                <div className="pointer-events-auto mt-16 flex justify-center lg:justify-start">
+                <div className="pointer-events-auto mt-16 flex justify-center">
                   <MagneticButton strength={0.4}>
                     <div className="flex flex-col items-center gap-2 text-muted-foreground/40 hover:text-primary transition-colors">
                       <span className="text-xs">اكتشف المزيد</span>
@@ -268,8 +272,12 @@ export default function HomePage() {
                 </div>
               </ScrollReveal>
             </div>
+            )}
           </section>
 
+          {/* Only reveal the rest of the page once the Earth is controllable */}
+          {earthReady && (
+            <div className="animate-fade-in">
           {/* ═══════════════════════════════════════════════════════
               MARQUEE
           ═══════════════════════════════════════════════════════ */}
@@ -640,7 +648,7 @@ export default function HomePage() {
             <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 sm:flex-row">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden"><img src="/icons/BO.PNG" alt="Business OS" className="h-full w-full object-contain" /></div>
-                <span className="text-sm font-bold">بيزنس أو إس</span>
+                <span className="text-sm font-bold">Business OS</span>
               </div>
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <Link href="/signin" className="transition-colors hover:text-foreground">تسجيل الدخول</Link>
@@ -649,6 +657,8 @@ export default function HomePage() {
               <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} بيزنس أو إس. جميع الحقوق محفوظة.</p>
             </div>
           </footer>
+            </div>
+          )}
         </main>
     </div>
   );

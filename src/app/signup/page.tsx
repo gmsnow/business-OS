@@ -153,7 +153,7 @@ export default function SignupPage() {
                   إنشاء حساب جديد
                 </h1>
                 <p className="mt-2 text-sm text-white/40">
-                  انضم إلى بيزنس أو إس مجاناً
+                  انضم إلى Business OS مجاناً
                 </p>
               </div>
 
