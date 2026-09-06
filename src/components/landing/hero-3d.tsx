@@ -160,8 +160,8 @@ export default function Hero3D() {
         className="h-full w-full"
         allow="autoplay; fullscreen; xr-spatial-tracking; camera"
         allowFullScreen
-        execution-while-out-of-viewport
-        execution-while-not-rendered
+        execution-while-out-of-viewport="true"
+        execution-while-not-rendered="true"
       />
     </div>
   );

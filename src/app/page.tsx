@@ -178,14 +178,14 @@ function SectionHeading({ badge, title, desc }: { badge: string; title: React.Re
 function HomeView() {
   const mounted = useIsMounted();
   return (
-    <section className="relative isolate flex min-h-screen items-center overflow-hidden">
+    <section className="relative isolate flex h-full items-center overflow-hidden">
       <FloatingParticles />
       <HeroGlow />
 
       {/* Live 3D wallpaper — the galaxy orb behind */}
       <Hero3D />
 
-      <div className="relative z-10 pointer-events-none mx-auto w-full max-w-7xl select-none px-6 pt-32 pb-20 lg:pt-36 animate-fade-in-up">
+      <div className="relative z-10 pointer-events-none mx-auto w-full max-w-7xl select-none px-6 pt-24 pb-10 lg:pt-28 animate-fade-in-up">
         <div className="grid items-center gap-12">
           <div className="text-center">
             <ScrollReveal delay={0} direction="up" distance={40}>
@@ -618,7 +618,7 @@ export default function HomePage() {
 
   return (
     <div className="noise-overlay">
-      <main className="min-h-screen bg-background pb-20 text-foreground" dir="rtl">
+      <main className="min-h-screen bg-background text-foreground" dir="rtl">
 
         {/* ═══════════════ Nav toggles & gesture zones ═══════════════ */}
 
@@ -659,13 +659,25 @@ export default function HomePage() {
           }}
         />
 
-        {/* Mobile: swipe up from the bottom edge reveals the dock */}
+        {/* Mobile: swipe up from the bottom edge reveals the dock.
+            Non-swipe taps in this strip are forwarded to the element underneath
+            so footer content near the screen bottom stays tappable. */}
         <div
           className="pointer-events-auto fixed inset-x-0 bottom-0 z-40 h-8 lg:hidden"
           onPointerDown={(e) => { gestureStart.current = { x: e.clientX, y: e.clientY }; }}
           onPointerUp={(e) => {
             const s = gestureStart.current;
-            if (s && s.y - e.clientY > 48) setNavOpen(true);
+            if (s && s.y - e.clientY > 48) {
+              setNavOpen(true);
+            } else if (s) {
+              const zone = e.currentTarget as HTMLElement;
+              zone.style.pointerEvents = "none";
+              const el = document.elementFromPoint(e.clientX, e.clientY);
+              zone.style.pointerEvents = "auto";
+              if (el && el !== zone) {
+                el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+              }
+            }
             gestureStart.current = null;
           }}
         />
@@ -716,16 +728,16 @@ export default function HomePage() {
             <div className="my-2 h-px w-8 bg-white/10" />
 
             {/* Auth */}
-            <div className="flex shrink-0 flex-col items-center gap-1">
+            <div className="flex shrink-0 flex-col items-center gap-1.5">
               <Link
                 href="/signin"
-                className="whitespace-nowrap rounded-full px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground transition-all duration-300 hover:bg-white/10 hover:text-foreground"
+                className="flex items-center rounded-full px-2 py-1 text-xs font-medium text-muted-foreground transition-all duration-300 hover:bg-white/10 hover:text-foreground"
               >
                 تسجيل الدخول
               </Link>
               <Link
                 href="/signup"
-                className="relative inline-block whitespace-nowrap rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground shadow-[0_0_18px_rgba(3,234,188,0.4)] transition-all duration-300 hover:shadow-lg hover:shadow-primary/40 hover:brightness-110 active:scale-[0.97]"
+                className="relative inline-block rounded-full bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground shadow-[0_0_18px_rgba(3,234,188,0.4)] transition-all duration-300 hover:shadow-lg hover:shadow-primary/40 hover:brightness-110 active:scale-[0.97]"
               >
                 إنشاء حساب
               </Link>
@@ -773,7 +785,7 @@ export default function HomePage() {
         </div>
 
         {/* ═══════════════ the single view — swapped, scrolls if content is big ═══════════════ */}
-        <div className="min-h-screen pb-24 lg:pb-0" key={page}>
+        <div className={page === "home" ? "h-screen overflow-hidden" : "min-h-screen pb-24 lg:pb-0"} key={page}>
           {page === "home" && <HomeView />}
           {page === "features" && <FeaturesView />}
           {page === "stats" && <StatsView />}

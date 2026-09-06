@@ -38,7 +38,7 @@ const CSP_DIRECTIVES = [
   `connect-src 'self' ${SKETCHFAB}`,
   `frame-src 'self' ${FRAME_SRC}`,
   `child-src ${FRAME_SRC}`,
-  `worker-src ${FRAME_SRC}`,
+  `worker-src 'self' ${FRAME_SRC}`,
   "base-uri 'self'",
   "form-action 'self'",
   "media-src 'self' blob:",
