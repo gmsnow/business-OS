@@ -8,6 +8,8 @@ const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV === "development",
 });
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  devIndicators: false,
+};
 
 export default withSerwist(nextConfig);

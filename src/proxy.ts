@@ -13,16 +13,35 @@ const SECURITY_HEADERS: Record<string, string> = {
   "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
 };
 
+/* Domains required by the Sketchfab 3D-model viewer embed */
+const SKETCHFAB = [
+  "sketchfab.com",
+  "*.sketchfab.com",
+  "static.sketchfab.com",
+  "*.static.sketchfab.com",
+  "*.s3.amazonaws.com",
+  "*.cloudfront.net",
+].join(" ");
+const FRAME_SRC = [
+  "sketchfab.com",
+  "*.sketchfab.com",
+  "static.sketchfab.com",
+  "*.static.sketchfab.com",
+].join(" ");
+
 const CSP_DIRECTIVES = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${SKETCHFAB}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `img-src 'self' data: blob: ${SKETCHFAB}`,
   "font-src 'self' data:",
-  "connect-src 'self'",
-  "frame-ancestors 'none'",
+  `connect-src 'self' ${SKETCHFAB}`,
+  `frame-src 'self' ${FRAME_SRC}`,
+  `child-src ${FRAME_SRC}`,
+  `worker-src ${FRAME_SRC}`,
   "base-uri 'self'",
   "form-action 'self'",
+  "media-src 'self' blob:",
 ].join("; ");
 
 /**
