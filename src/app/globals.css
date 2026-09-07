@@ -502,6 +502,18 @@ body {
 @media (pointer: coarse) {
   .pointer-events-none.fixed:not(.dock-wrap):not(.rail-wrap) { display: none !important; }
 }
+/* Dock: shown on small screens or any touch device (positive media queries only,
+   avoids Tailwind's negated `max-[600px]:` form which Chromium evaluates
+   inconsistently). */
+.dock-wrap { display: none; }
+@media (max-width: 600px), (pointer: coarse) {
+  .dock-wrap { display: block !important; }
+}
+/* Rail: desktop mouse only */
+.rail-wrap { display: none; }
+@media (min-width: 601px) and (pointer: fine) {
+  .rail-wrap { display: block; }
+}
 
 /* Section divider wave */
 .wave-divider {
