@@ -354,6 +354,45 @@ body {
 .animate-page-exit-3d  { animation: page-exit-3d 0.34s ease-in both; }
 .animate-page-enter-3d { animation: page-enter-3d 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
+/* ── AI assistant floating modal ─────────────────────────────────── */
+@keyframes modal-pop {
+  from { opacity: 0; transform: translateY(30px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes bubble-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes orb-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(3, 234, 188, 0.35); }
+  50%      { box-shadow: 0 0 0 12px rgba(3, 234, 188, 0); }
+}
+@keyframes soundbar {
+  0%, 100% { transform: scaleY(0.3); }
+  50%      { transform: scaleY(1); }
+}
+@keyframes ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-modal-pop  { animation: modal-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-bubble-in  { animation: bubble-in 0.3s ease-out both; }
+.animate-orb-pulse  { animation: orb-pulse 2.4s ease-in-out infinite; }
+.animate-ring-spin  { animation: ring-spin 7s linear infinite; }
+
+/* ── Music player ────────────────────────────────────────────────── */
+@keyframes disc-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.9; }
+}
+.animate-disc-spin { animation: disc-spin 9s linear infinite; }
+.animate-glow     { animation: glow-breathe 2.4s ease-in-out infinite; }
+
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
