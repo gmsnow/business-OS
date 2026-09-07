@@ -58,14 +58,12 @@ export default function Hero3D() {
   useEffect(() => {
     let disposed = false;
     let poll: number | undefined;
-    let failSafe: number | undefined;
-
     const hideSpinner = () => {
       if (failSafe !== undefined) window.clearTimeout(failSafe);
       setLoading(false);
     };
 
-    failSafe = window.setTimeout(hideSpinner, 20000);
+    const failSafe = window.setTimeout(hideSpinner, 20000);
 
     const startPoller = (api: SketchfabApi, initDist: number) => {
       if (initDist <= 0 || disposed) return;
@@ -92,7 +90,7 @@ export default function Hero3D() {
       const client = new window.Sketchfab(iframeRef.current);
       client.init(MODEL_UID, {
         autostart: 1,
-        autospin: -0.2,
+        autospin: 0.2,
         ui_infos: 0,
         ui_controls: 0,
         ui_stop: 0,

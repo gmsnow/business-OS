@@ -54,10 +54,10 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
     currentIdRef.current = currentId;
   }, [currentId]);
 
-  /* Auto-collapse to the small icon after 10s of being open. */
+  /* Auto-collapse the open player back to the floating note after 5s of idling. */
   useEffect(() => {
     if (!visible || collapsed) return;
-    idleRef.current = window.setTimeout(() => setCollapsed(true), 10000);
+    idleRef.current = window.setTimeout(() => setCollapsed(true), 5000);
     return () => {
       if (idleRef.current) window.clearTimeout(idleRef.current);
     };
@@ -177,9 +177,10 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
   const pct = duration > 0 ? Math.min((progress / duration) * 100, 100) : 0;
 
   const bumpIdle = () => {
+    /* Interacting with the open player rolls the 5s auto-collapse timer over. */
     if (!visible || collapsed) return;
     if (idleRef.current) window.clearTimeout(idleRef.current);
-    idleRef.current = window.setTimeout(() => setCollapsed(true), 10000);
+    idleRef.current = window.setTimeout(() => setCollapsed(true), 5000);
   };
 
   const onPointerDown = (e: RPointerEvent<HTMLDivElement>) => {
@@ -224,9 +225,10 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
     setDragging(false);
     setOverClose(false);
     if (wasOver) {
+      /* Dropping the note on the trash bin stops playback but keeps the
+         launcher icon around. */
       stop();
-      setVisible(false);
-      setCollapsed(false);
+      setCollapsed(true);
     }
   };
 
@@ -262,66 +264,51 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
       />
       <video ref={audioRef} src={current?.url} preload="auto" className="hidden" />
 
-      {!visible && (
-        <button
-          type="button"
-          onClick={() => {
-            setVisible(true);
-            setCollapsed(false);
-          }}
-          aria-label="فتح المشغّل الصوتي"
-          className="pointer-events-auto fixed bottom-5 left-5 z-[75] flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-background/85 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.55)] backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_28px_-6px_rgba(0,0,0,0.6),0_0_22px_-4px_rgba(3,234,188,0.45)] active:scale-95"
-        >
-          <div className="pointer-events-none flex h-full w-full items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#3a3a42,#101014_70%)]">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-[#0263D1]/80">
-              <Music className="h-3 w-3 text-zinc-950" />
-            </div>
-          </div>
-        </button>
-      )}
-
       {visible && (
         <div dir="rtl" className="pointer-events-none fixed inset-0 z-[75] player-wrap">
-          {collapsed ? (
-            <button
-              type="button"
-              onClickCapture={(e) => {
-                if (swallowAfterDrag()) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }
-              }}
-              onClick={() => {
-                bumpIdle();
-                setCollapsed(false);
-              }}
-              onPointerDown={onIconPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={endIconDrag}
-              onPointerCancel={endIconDrag}
-              aria-label="فتح المشغّل الصوتي"
-              className="pointer-events-auto absolute left-0 top-0 flex h-10 w-10 cursor-grab touch-none select-none items-center justify-center rounded-full animate-fade-in active:cursor-grabbing"
-              style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
-            >
-              <Music
-                className="pointer-events-none h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110"
-                style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 12px rgba(3,234,188,0.35))" }}
-              />
-              {playing && (
-                <span className="pointer-events-none absolute -bottom-0.5 -left-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary shadow-[0_0_10px_rgba(3,234,188,0.9)]">
-                  <span className="flex h-3 items-end gap-[2px]" aria-hidden>
-                    {[0, 1, 2].map((d) => (
-                      <span
-                        key={d}
-                        className="w-[2px] origin-bottom rounded-full bg-zinc-950 animate-[soundbar_0.9s_ease-in-out_infinite]"
-                        style={{ height: d === 1 ? 9 : 6, animationDelay: `${d * 110}ms` }}
-                      />
-                    ))}
-                  </span>
+          {/* Floating note — always mounted so it can cross-fade with the bar */}
+          <button
+            type="button"
+            onClickCapture={(e) => {
+              if (swallowAfterDrag()) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }}
+            onClick={() => {
+              bumpIdle();
+              setCollapsed(false);
+            }}
+            onPointerDown={onIconPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endIconDrag}
+            onPointerCancel={endIconDrag}
+            aria-label="فتح المشغّل الصوتي"
+            className={`absolute left-0 top-0 flex h-10 w-10 cursor-grab touch-none select-none items-center justify-center rounded-full transition-all duration-500 ease-out active:cursor-grabbing ${
+              collapsed ? "opacity-100 scale-100" : "pointer-events-none opacity-0 scale-75"
+            }`}
+            style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
+          >
+            <Music
+              className="pointer-events-none h-5 w-5 text-primary drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
+              style={{ filter: "drop-shadow(0 0 12px rgba(3,234,188,0.35))" }}
+            />
+            {playing && (
+              <span className="pointer-events-none absolute -bottom-0.5 -left-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary shadow-[0_0_10px_rgba(3,234,188,0.9)]">
+                <span className="flex h-3 items-end gap-[2px]" aria-hidden>
+                  {[0, 1, 2].map((d) => (
+                    <span
+                      key={d}
+                      className="w-[2px] origin-bottom rounded-full bg-zinc-950 animate-[soundbar_0.9s_ease-in-out_infinite]"
+                      style={{ height: d === 1 ? 9 : 6, animationDelay: `${d * 110}ms` }}
+                    />
+                  ))}
                 </span>
-              )}
-            </button>
-          ) : (
+              </span>
+            )}
+          </button>
+
+          {/* Expanded mini player */}
           <div
             onClickCapture={(e) => {
               if (swallowAfterDrag()) {
@@ -333,7 +320,9 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
             onPointerCancel={endDrag}
-            className="pointer-events-auto absolute left-0 top-0 w-[min(calc(100vw-1.5rem),28rem)] select-none overflow-hidden rounded-[22px] border border-white/10 bg-background/90 shadow-[0_10px_40px_-8px_rgba(3,234,188,0.25),0_20px_44px_-12px_rgba(0,0,0,0.6)] backdrop-blur-2xl animate-fade-in cursor-grab active:cursor-grabbing touch-none"
+            className={`absolute left-0 top-0 w-[min(calc(100vw-1.5rem),28rem)] select-none overflow-hidden rounded-[22px] border border-white/10 bg-background/90 shadow-[0_10px_40px_-8px_rgba(3,234,188,0.25),0_20px_44px_-12px_rgba(0,0,0,0.6)] backdrop-blur-2xl cursor-grab active:cursor-grabbing touch-none transition-all duration-500 ease-out ${
+              collapsed ? "pointer-events-none opacity-0 scale-90" : "opacity-100 scale-100"
+            }`}
             style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
           >
             {/* top sheen */}
@@ -438,7 +427,7 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
 
                 <button
                   type="button"
-                  onClick={() => setVisible(false)}
+                  onClick={() => setCollapsed(true)}
                   aria-label="إخفاء المشغّل"
                   className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground/50 transition-colors hover:bg-white/10 hover:text-muted-foreground"
                 >
@@ -457,7 +446,7 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
               </div>
             )}
           </div>
-          )}
+
           {dragging && (
             <div
               ref={closeRef}

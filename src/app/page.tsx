@@ -716,81 +716,7 @@ export default function HomePage() {
           </nav>
         </div>
 
-        {/* ═══════════════ MOBILE NAV — bottom dock with a plain-arrow toggle ═══════════════ */}
-        {/* Fixed full-width bottom bar. Mounted directly under <main> (no transformed
-            / overflow-hidden / opacity ancestor that could trap it). z-[70] puts it
-            above the hero 3D (z-0), content (z-10), gesture zones (z-40) and the
-            desktop rail (z-50). Safe-area aware for gesture/nav bars. */}
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] dock-wrap">
-          {/* Toggle arrow — a bare chevron, no button chrome. Stays put when the
-              bar slides away so the dock is always recoverable. `.dock-wrap` is
-              forced to `display:block` by the media rule, so centering lives in
-              this inner flex row (immune to that override). */}
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={() => setDockOpen((v) => !v)}
-              aria-label={dockOpen ? "إخفاء شريط التنقل" : "إظهار شريط التنقل"}
-              aria-expanded={dockOpen}
-              className="pointer-events-auto relative z-10 flex h-6 w-20 -mb-3 items-center justify-center outline-none [-webkit-tap-highlight-color:transparent]"
-            >
-              <ChevronDown
-                className={`h-4 w-4 text-foreground/45 transition-transform duration-300 hover:text-primary ${dockOpen ? "" : "rotate-180"}`}
-                style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.8))" }}
-              />
-            </button>
-          </div>
-
-          <nav
-            className={`pointer-events-auto relative flex w-full items-center gap-1 overflow-x-auto border-t border-white/10 bg-background/95 pt-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl [scrollbar-width:none] [touch-action:pan-x] transition-transform duration-300 ease-out [&::-webkit-scrollbar]:hidden ${dockOpen ? "translate-y-0" : "translate-y-full"}`}
-          >
-            <button
-              type="button"
-              onClick={() => setAiOpen(true)}
-              title="المساعد الذكي"
-              aria-label="فتح المساعد الذكي"
-              className="flex shrink-0 cursor-pointer items-center rounded-xl px-1.5 py-1 transition-colors hover:bg-white/10 outline-none [-webkit-tap-highlight-color:transparent]"
-            >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden shadow-md shadow-primary/30">
-                <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
-              </div>
-            </button>
-
-            <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
-
-            {NAV_PAGES.map((p) => {
-              const active = page === p.key;
-              return (
-                <button
-                  key={p.key}
-                  type="button"
-                  onClick={() => { setPage(p.key); setNavOpen(false); }}
-                  className={`group flex shrink-0 flex-col items-center justify-center rounded-full px-3 py-2 text-muted-foreground outline-none transition-all duration-500 focus:outline-none focus-visible:outline-none [-webkit-tap-highlight-color:transparent] ${
-                    active
-                      ? "bg-primary/20 text-primary shadow-[0_0_18px_rgba(3,234,188,0.35),inset_0_1px_0_rgba(255,255,255,0.15)]"
-                      : "hover:bg-white/[0.07] hover:text-foreground active:scale-95"
-                  }`}
-                >
-                  <p.icon className={`h-5 w-5 transition-all duration-500 ${active ? "text-primary drop-shadow-[0_0_6px_rgba(3,234,188,0.8)]" : "group-hover:text-primary"}`} />
-                  <span className={`mt-0.5 max-w-[3rem] truncate text-[9px] font-semibold leading-tight ${active ? "text-primary" : "text-muted-foreground opacity-80"}`}>
-                    {p.label}
-                  </span>
-                </button>
-              );
-            })}
-
-            <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
-
-            <Link
-              href="/signup"
-              className="shrink-0 rounded-full bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-[0_0_18px_rgba(3,234,188,0.4)] transition-all hover:brightness-110 active:scale-95"
-            >
-              إنشاء حساب
-            </Link>
-          </nav>
-        </div>
-
-      {/* ═══════════════ the single view — swapped with a 3D transition ═══════════════ */}
+        {/* ═══════════════ the single view — swapped with a 3D transition ═══════════════ */}
         <div className={`${page === "home" ? "h-screen overflow-hidden" : "min-h-screen pb-24 min-[601px]:pb-0"}`}>
           <ViewTransition
             page={page}
@@ -814,6 +740,79 @@ export default function HomePage() {
           />
         </div>
       </main>
+
+      {/* ═══════════════ MOBILE NAV — bottom dock with a plain-arrow toggle ═══════════════ */}
+      {/* Rendered at the root (OUTSIDE <main>) so its `position: fixed` is never
+          trapped by a transformed / filtered / overflow-hidden ancestor — it stays
+          pinned to the viewport bottom through scroll and content growth. */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] dock-wrap">
+        {/* Toggle arrow — a bare chevron, no button chrome. Stays put when the
+            bar slides away so the dock is always recoverable. `.dock-wrap` is
+            forced to `display:block` by the media rule, so centering lives in
+            this inner flex row (immune to that override). */}
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={() => setDockOpen((v) => !v)}
+            aria-label={dockOpen ? "إخفاء شريط التنقل" : "إظهار شريط التنقل"}
+            aria-expanded={dockOpen}
+            className="pointer-events-auto relative z-10 flex h-6 w-20 -mb-3 items-center justify-center outline-none [-webkit-tap-highlight-color:transparent]"
+          >
+            <ChevronDown
+              className={`h-4 w-4 text-foreground/45 transition-transform duration-300 hover:text-primary ${dockOpen ? "" : "rotate-180"}`}
+              style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.8))" }}
+            />
+          </button>
+        </div>
+
+        <nav
+          className={`pointer-events-auto relative flex w-full items-center gap-1 overflow-x-auto border-t border-white/10 bg-background/95 pt-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl [scrollbar-width:none] [touch-action:pan-x] transition-transform duration-300 ease-out [&::-webkit-scrollbar]:hidden ${dockOpen ? "translate-y-0" : "translate-y-full"}`}
+        >
+          <button
+            type="button"
+            onClick={() => setAiOpen(true)}
+            title="المساعد الذكي"
+            aria-label="فتح المساعد الذكي"
+            className="flex shrink-0 cursor-pointer items-center rounded-xl px-1.5 py-1 transition-colors hover:bg-white/10 outline-none [-webkit-tap-highlight-color:transparent]"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden shadow-md shadow-primary/30">
+              <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
+            </div>
+          </button>
+
+          <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
+
+          {NAV_PAGES.map((p) => {
+            const active = page === p.key;
+            return (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => { setPage(p.key); setNavOpen(false); }}
+                className={`group flex shrink-0 flex-col items-center justify-center rounded-full px-3 py-2 text-muted-foreground outline-none transition-all duration-500 focus:outline-none focus-visible:outline-none [-webkit-tap-highlight-color:transparent] ${
+                  active
+                    ? "bg-primary/20 text-primary shadow-[0_0_18px_rgba(3,234,188,0.35),inset_0_1px_0_rgba(255,255,255,0.15)]"
+                    : "hover:bg-white/[0.07] hover:text-foreground active:scale-95"
+                }`}
+              >
+                <p.icon className={`h-5 w-5 transition-all duration-500 ${active ? "text-primary drop-shadow-[0_0_6px_rgba(3,234,188,0.8)]" : "group-hover:text-primary"}`} />
+                <span className={`mt-0.5 max-w-[3rem] truncate text-[9px] font-semibold leading-tight ${active ? "text-primary" : "text-muted-foreground opacity-80"}`}>
+                  {p.label}
+                </span>
+              </button>
+            );
+})}
+
+            <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
+
+          <Link
+            href="/signup"
+            className="shrink-0 rounded-full bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-[0_0_18px_rgba(3,234,188,0.4)] transition-all hover:brightness-110 active:scale-95"
+          >
+            إنشاء حساب
+          </Link>
+        </nav>
+      </div>
 
       <AiChatModal open={aiOpen} onClose={() => setAiOpen(false)} />
       <MusicPlayer />
