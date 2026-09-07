@@ -28,8 +28,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/icons/BO.PNG" sizes="192x192" />
-        <link rel="apple-touch-icon" href="/icons/BO.PNG" />
+        <link rel="icon" href="/icons/BO.png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="/icons/BO.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `try{const t=localStorage.getItem('bos_theme');if(t==='light'||t==='dark')document.documentElement.classList.add(t);else if(!t||window.matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}`,

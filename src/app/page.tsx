@@ -590,7 +590,7 @@ function CtaView() {
       <footer className="w-full border-t border-border/50 py-6 mt-10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden"><img src="/icons/BO.PNG" alt="Business OS" className="h-full w-full object-contain" /></div>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden"><img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" /></div>
             <span className="text-sm font-bold">Business OS</span>
           </div>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
@@ -625,7 +625,7 @@ export default function HomePage() {
           <div className="flex h-14 min-h-0 items-center justify-between gap-3 border-b border-white/10 bg-background/80 px-4 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/70">
             <Link href="/" className="flex min-w-0 items-center gap-2.5" aria-label="Business OS">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-md shadow-primary/30">
-                <img src="/icons/BO.PNG" alt="Business OS" className="h-full w-full object-contain" />
+                <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
               </div>
               <span className="truncate text-sm font-bold">Business OS</span>
             </Link>
@@ -722,7 +722,7 @@ export default function HomePage() {
             {/* Brand */}
             <Link href="/" className="flex shrink-0 items-center gap-2 rounded-xl px-2 py-1.5 transition-colors hover:bg-white/10" title="Business OS">
               <div className="relative flex h-8 w-8 items-center justify-center rounded-xl overflow-hidden shadow-lg shadow-primary/30">
-                <img src="/icons/BO.PNG" alt="Business OS" className="h-full w-full object-contain" />
+                <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
               </div>
             </Link>
 
@@ -783,7 +783,7 @@ export default function HomePage() {
           <nav className={`pointer-events-auto relative flex max-w-full items-center gap-1 overflow-x-auto rounded-full border border-white/10 bg-background/95 py-2 pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-all duration-500 ease-out [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${navOpen ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-[140%]"}`}>
             <Link href="/" className="flex shrink-0 items-center rounded-xl px-1.5 py-1 transition-colors hover:bg-white/10" title="Business OS">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden shadow-md shadow-primary/30">
-                <img src="/icons/BO.PNG" alt="Business OS" className="h-full w-full object-contain" />
+                <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
               </div>
             </Link>
 

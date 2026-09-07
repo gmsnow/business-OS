@@ -97,7 +97,7 @@ export default function DemoPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl overflow-hidden shadow-lg shadow-primary/30">
-              <img src="/icons/BO.PNG" alt="Business OS" className="h-full w-full object-contain" />
+              <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
             </div>
             <span className="text-base sm:text-lg font-bold tracking-tight">Business OS</span>
           </Link>

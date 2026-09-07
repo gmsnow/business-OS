@@ -109,7 +109,7 @@ export default function SignInPage() {
               <div className="relative mx-auto mb-8 flex h-20 w-20 items-center justify-center">
                 <div className="relative flex h-full w-full items-center justify-center rounded-2xl overflow-hidden shadow-xl shadow-primary/30 ring-1 ring-white/10 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/40 hover:scale-105">
                   <Image
-                    src="/icons/BO.PNG"
+                    src="/icons/BO.png"
                     alt="Business OS"
                     width={80}
                     height={80}
