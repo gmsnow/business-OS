@@ -7,7 +7,7 @@ import {
   Package, ShoppingCart, Receipt, Wallet, Monitor, BarChart3,
   Shield, Globe, ArrowLeft, CheckCircle2, Sparkles, Zap, Users,
   LayoutDashboard, Settings, TrendingUp, Star, CreditCard, Boxes,
-  Store, Home, LayoutGrid, ListChecks, Rocket, ChevronRight, ChevronDown,
+  Store, Home, LayoutGrid, ListChecks, Rocket, ChevronRight, ChevronDown, Music,
 } from "lucide-react";
 import ScrollReveal from "@/components/landing/scroll-reveal";
 import TiltCard from "@/components/landing/tilt-card";
@@ -19,6 +19,7 @@ import GlowCard from "@/components/landing/glow-card";
 import SplitText from "@/components/landing/split-text";
 import ViewTransition from "@/components/landing/view-transition";
 import AiChatModal from "@/components/landing/ai-chat";
+import MusicPlayer, { type MusicPlayerHandle } from "@/components/landing/music-player";
 
 /* ── 3D Hero (lazy-loaded, excluded from server render) ─── */
 const Hero3D = dynamic(() => import("@/components/landing/hero-3d"), {
@@ -616,6 +617,7 @@ export default function HomePage() {
   const [navOpen, setNavOpen] = useState(false);
   const [dockOpen, setDockOpen] = useState(true);
   const [aiOpen, setAiOpen] = useState(false);
+  const musicRef = useRef<MusicPlayerHandle | null>(null);
   const gestureStart = useRef<{ x: number; y: number } | null>(null);
 
   // Switching views always starts at the top of the new page.
@@ -697,6 +699,20 @@ export default function HomePage() {
 
             <div className="my-2 h-px w-8 bg-white/10" />
 
+            {/* Music player */}
+            <button
+              type="button"
+              onClick={() => musicRef.current?.open()}
+              title="المشغّل الصوتي"
+              aria-label="فتح المشغّل الصوتي"
+              className="group flex flex-col items-center justify-center rounded-full px-2 py-1.5 text-muted-foreground outline-none transition-all duration-300 hover:bg-white/[0.07] hover:text-primary active:scale-95"
+            >
+              <Music className="h-5 w-5 transition-all duration-300 group-hover:text-primary" />
+              <span className="mt-0 max-w-[2.6rem] truncate text-[9px] font-semibold leading-tight text-muted-foreground opacity-80 group-hover:text-primary">
+                موسيقى
+              </span>
+            </button>
+
             {/* Auth */}
             <div className="flex shrink-0 flex-col items-center gap-1.5">
               <Link
@@ -753,6 +769,20 @@ export default function HomePage() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden shadow-md shadow-primary/30">
                 <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
               </div>
+            </button>
+
+            <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
+
+            <button
+              type="button"
+              onClick={() => musicRef.current?.pick()}
+              aria-label="إضافة موسيقى من الجهاز وفتح المشغّل"
+              className="group flex shrink-0 flex-col items-center justify-center rounded-full px-3 py-2 text-muted-foreground outline-none transition-all duration-300 hover:bg-white/[0.07] hover:text-foreground active:scale-95 [-webkit-tap-highlight-color:transparent]"
+            >
+              <Music className="h-5 w-5 transition-all duration-300 group-hover:text-primary" />
+              <span className="mt-0.5 max-w-[3rem] truncate text-[9px] font-semibold leading-tight text-muted-foreground opacity-80 group-hover:text-primary">
+                موسيقى
+              </span>
             </button>
 
             <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
@@ -815,6 +845,7 @@ export default function HomePage() {
       </main>
 
       <AiChatModal open={aiOpen} onClose={() => setAiOpen(false)} />
+      <MusicPlayer ref={musicRef} />
     </div>
   );
 }
