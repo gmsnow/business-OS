@@ -18,6 +18,7 @@ import TextScramble from "@/components/landing/text-scramble";
 import GlowCard from "@/components/landing/glow-card";
 import SplitText from "@/components/landing/split-text";
 import ViewTransition from "@/components/landing/view-transition";
+import AiChatModal from "@/components/landing/ai-chat";
 
 /* ── 3D Hero (lazy-loaded, excluded from server render) ─── */
 const Hero3D = dynamic(() => import("@/components/landing/hero-3d"), {
@@ -614,6 +615,7 @@ export default function HomePage() {
   const [page, setPage] = useState<PageKey>("home");
   const [navOpen, setNavOpen] = useState(false);
   const [dockOpen, setDockOpen] = useState(true);
+  const [aiOpen, setAiOpen] = useState(false);
   const gestureStart = useRef<{ x: number; y: number } | null>(null);
 
   // Switching views always starts at the top of the new page.
@@ -718,30 +720,40 @@ export default function HomePage() {
             / overflow-hidden / opacity ancestor that could trap it). z-[70] puts it
             above the hero 3D (z-0), content (z-10), gesture zones (z-40) and the
             desktop rail (z-50). Safe-area aware for gesture/nav bars. */}
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] dock-wrap flex flex-col items-center">
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] dock-wrap">
           {/* Toggle arrow — a bare chevron, no button chrome. Stays put when the
-              bar slides away so the dock is always recoverable. */}
-          <button
-            type="button"
-            onClick={() => setDockOpen((v) => !v)}
-            aria-label={dockOpen ? "إخفاء شريط التنقل" : "إظهار شريط التنقل"}
-            aria-expanded={dockOpen}
-            className="pointer-events-auto flex h-6 w-20 items-center justify-center outline-none [-webkit-tap-highlight-color:transparent]"
-          >
-            <ChevronDown
-              className={`h-4 w-4 text-foreground/45 transition-transform duration-300 hover:text-primary ${dockOpen ? "" : "rotate-180"}`}
-              style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.8))" }}
-            />
-          </button>
+              bar slides away so the dock is always recoverable. `.dock-wrap` is
+              forced to `display:block` by the media rule, so centering lives in
+              this inner flex row (immune to that override). */}
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={() => setDockOpen((v) => !v)}
+              aria-label={dockOpen ? "إخفاء شريط التنقل" : "إظهار شريط التنقل"}
+              aria-expanded={dockOpen}
+              className="pointer-events-auto relative z-10 flex h-6 w-20 -mb-3 items-center justify-center outline-none [-webkit-tap-highlight-color:transparent]"
+            >
+              <ChevronDown
+                className={`h-4 w-4 text-foreground/45 transition-transform duration-300 hover:text-primary ${dockOpen ? "" : "rotate-180"}`}
+                style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.8))" }}
+              />
+            </button>
+          </div>
 
           <nav
-            className={`pointer-events-auto relative flex w-full items-center gap-1 overflow-x-auto border-t border-white/10 bg-background/95 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl [scrollbar-width:none] [touch-action:pan-x] transition-transform duration-300 ease-out [&::-webkit-scrollbar]:hidden ${dockOpen ? "translate-y-0" : "translate-y-full"}`}
+            className={`pointer-events-auto relative flex w-full items-center gap-1 overflow-x-auto border-t border-white/10 bg-background/95 pt-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl [scrollbar-width:none] [touch-action:pan-x] transition-transform duration-300 ease-out [&::-webkit-scrollbar]:hidden ${dockOpen ? "translate-y-0" : "translate-y-full"}`}
           >
-            <Link href="/" className="flex shrink-0 items-center rounded-xl px-1.5 py-1 transition-colors hover:bg-white/10" title="Business OS">
+            <button
+              type="button"
+              onClick={() => setAiOpen(true)}
+              title="المساعد الذكي"
+              aria-label="فتح المساعد الذكي"
+              className="flex shrink-0 cursor-pointer items-center rounded-xl px-1.5 py-1 transition-colors hover:bg-white/10 outline-none [-webkit-tap-highlight-color:transparent]"
+            >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden shadow-md shadow-primary/30">
                 <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
               </div>
-            </Link>
+            </button>
 
             <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
 
@@ -801,6 +813,8 @@ export default function HomePage() {
           />
         </div>
       </main>
+
+      <AiChatModal open={aiOpen} onClose={() => setAiOpen(false)} />
     </div>
   );
 }
