@@ -7,7 +7,7 @@ import {
   Package, ShoppingCart, Receipt, Wallet, Monitor, BarChart3,
   Shield, Globe, ArrowLeft, CheckCircle2, Sparkles, Zap, Users,
   LayoutDashboard, Settings, TrendingUp, Star, CreditCard, Boxes,
-  Store, Home, LayoutGrid, ListChecks, Rocket, ChevronRight, ChevronDown, Music,
+  Store, Home, LayoutGrid, ListChecks, Rocket, ChevronRight, ChevronDown,
 } from "lucide-react";
 import ScrollReveal from "@/components/landing/scroll-reveal";
 import TiltCard from "@/components/landing/tilt-card";
@@ -19,7 +19,7 @@ import GlowCard from "@/components/landing/glow-card";
 import SplitText from "@/components/landing/split-text";
 import ViewTransition from "@/components/landing/view-transition";
 import AiChatModal from "@/components/landing/ai-chat";
-import MusicPlayer, { type MusicPlayerHandle } from "@/components/landing/music-player";
+import MusicPlayer from "@/components/landing/music-player";
 
 /* ── 3D Hero (lazy-loaded, excluded from server render) ─── */
 const Hero3D = dynamic(() => import("@/components/landing/hero-3d"), {
@@ -617,7 +617,6 @@ export default function HomePage() {
   const [navOpen, setNavOpen] = useState(false);
   const [dockOpen, setDockOpen] = useState(true);
   const [aiOpen, setAiOpen] = useState(false);
-  const musicRef = useRef<MusicPlayerHandle | null>(null);
   const gestureStart = useRef<{ x: number; y: number } | null>(null);
 
   // Switching views always starts at the top of the new page.
@@ -816,25 +815,8 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* ═══════════════ Music — floating icon launcher ═══════════════ */}
-      {/* Not part of the rail/dock navigation: a small always-floating disc that
-          opens the draggable player. On mobile it clears the dock's height. */}
-      <button
-        type="button"
-        onClick={() => musicRef.current?.open()}
-        aria-label="فتح المشغّل الصوتي"
-        title="المشغّل الصوتي"
-        className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+6rem)] z-[72] flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-background/90 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.55),0_0_24px_-4px_rgba(3,234,188,0.45)] backdrop-blur-2xl transition-all duration-300 hover:scale-105 hover:shadow-[0_10px_34px_-8px_rgba(0,0,0,0.6),0_0_30px_-4px_rgba(3,234,188,0.65)] active:scale-95 outline-none [-webkit-tap-highlight-color:transparent] lg:right-6 lg:bottom-6"
-      >
-        <div className="pointer-events-none flex h-full w-full items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#3a3a42,#101014_70%)]">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-[#0263D1]/80">
-            <Music className="h-3.5 w-3.5 text-zinc-950" />
-          </div>
-        </div>
-      </button>
-
       <AiChatModal open={aiOpen} onClose={() => setAiOpen(false)} />
-      <MusicPlayer ref={musicRef} />
+      <MusicPlayer />
     </div>
   );
 }

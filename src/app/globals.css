@@ -539,7 +539,7 @@ body {
   }
 }
 @media (pointer: coarse) {
-  .pointer-events-none.fixed:not(.dock-wrap):not(.rail-wrap) { display: none !important; }
+  .pointer-events-none.fixed:not(.dock-wrap):not(.rail-wrap):not(.player-wrap) { display: none !important; }
 }
 /* Dock: shown on small screens or any touch device (positive media queries only,
    avoids Tailwind's negated `max-[600px]:` form which Chromium evaluates

@@ -1,13 +1,14 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useEffect, useRef, useState } from "react";
+import { forwardRef, useImperativeHandle, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { PointerEvent as RPointerEvent } from "react";
-import { Music, Pause, Play, Plus, SkipBack, SkipForward, Square, X } from "lucide-react";
+import { Film, Music, Pause, Play, Plus, SkipBack, SkipForward, Square, X } from "lucide-react";
 
 interface Track {
   id: string;
   name: string;
   url: string;
+  fromVideo?: boolean;
 }
 
 export interface MusicPlayerHandle {
@@ -17,26 +18,33 @@ export interface MusicPlayerHandle {
 }
 
 export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props, ref) {
-  const [visible, setVisible] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [collapsed, setCollapsed] = useState(true);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const tracksRef = useRef<Track[]>([]);
   const currentIdRef = useRef<string | null>(null);
   const dragRef = useRef<{ dx: number; dy: number } | null>(null);
   const idleRef = useRef<number | null>(null);
   const movedRef = useRef(false);
-  const [pos, setPos] = useState<{ x: number; y: number }>(() => {
-    if (typeof window === "undefined") return { x: 24, y: 160 };
+  const closeRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const [overClose, setOverClose] = useState(false);
+  const [pos, setPos] = useState<{ x: number; y: number }>({ x: 24, y: 160 });
+
+  /* The lazy initializer can't be trusted after SSR hydration (the server-rendered
+     value wins), so nudge the floating icon into its starting spot once, on the
+     client, right before paint. */
+  useLayoutEffect(() => {
     const w = Math.min(window.innerWidth - 24, 448);
-    return { x: Math.max(12, (window.innerWidth - w) / 2), y: window.innerHeight - 180 };
-  });
+    setPos({ x: Math.max(12, window.innerWidth - w - 24), y: window.innerHeight - 180 });
+  }, []);
 
   useEffect(() => {
     tracksRef.current = tracks;
@@ -149,11 +157,14 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
     if (!list || !list.length) return;
     const next: Track[] = [];
     for (const f of Array.from(list)) {
-      if (!f.type.startsWith("audio/")) continue;
+      const isAudio = f.type.startsWith("audio/");
+      const isVideo = f.type.startsWith("video/");
+      if (!isAudio && !isVideo) continue;
       next.push({
         id: `${f.name}-${f.size}-${Date.now()}`,
         name: f.name.replace(/\.[^.]+$/, ""),
         url: URL.createObjectURL(f),
+        fromVideo: isVideo,
       });
     }
     if (!next.length) return;
@@ -173,8 +184,10 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
 
   const onPointerDown = (e: RPointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
-    if (e.target instanceof HTMLElement && e.target.closest("input, audio")) return;
     bumpIdle();
+    /* Don't hijack presses that land on interactive controls — the bar is
+       draggable from its empty areas; buttons must keep their clicks. */
+    if (e.target instanceof Element && e.target.closest("button, input, video, select, a")) return;
     movedRef.current = false;
     dragRef.current = { dx: e.clientX - pos.x, dy: e.clientY - pos.y };
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -185,15 +198,36 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
     if (!d) return;
     bumpIdle();
     movedRef.current = true;
-    const bw = Math.min(window.innerWidth - 24, 448);
-    const bh = 64;
-    const x = Math.min(Math.max(12, e.clientX - d.dx), Math.max(12, window.innerWidth - bw - 12));
-    const y = Math.min(Math.max(12, e.clientY - d.dy), Math.max(12, window.innerHeight - bh - 12));
+    const isIcon = collapsed;
+    const w = isIcon ? 40 : Math.min(window.innerWidth - 24, 448);
+    const h = isIcon ? 40 : 64;
+    const x = Math.min(Math.max(12, e.clientX - d.dx), Math.max(12, window.innerWidth - w - 12));
+    const y = Math.min(Math.max(12, e.clientY - d.dy), Math.max(12, window.innerHeight - h - 12));
     setPos({ x, y });
+    if (isIcon) setOverClose(isOverClose(e.clientX, e.clientY));
+  };
+
+  const isOverClose = (x: number, y: number) => {
+    const el = closeRef.current;
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
   };
 
   const endDrag = () => {
     dragRef.current = null;
+  };
+
+  const endIconDrag = (e: RPointerEvent<HTMLButtonElement>) => {
+    dragRef.current = null;
+    const wasOver = isOverClose(e.clientX, e.clientY);
+    setDragging(false);
+    setOverClose(false);
+    if (wasOver) {
+      stop();
+      setVisible(false);
+      setCollapsed(false);
+    }
   };
 
   const swallowAfterDrag = () => {
@@ -209,6 +243,7 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
     bumpIdle();
     movedRef.current = false;
     dragRef.current = { dx: e.clientX - pos.x, dy: e.clientY - pos.y };
+    setDragging(true);
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
@@ -217,7 +252,7 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
       <input
         ref={fileRef}
         type="file"
-        accept="audio/*"
+        accept="audio/*,video/*"
         multiple
         className="hidden"
         onChange={(e) => {
@@ -225,10 +260,28 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
           e.target.value = "";
         }}
       />
-      <audio ref={audioRef} src={current?.url} preload="auto" className="hidden" />
+      <video ref={audioRef} src={current?.url} preload="auto" className="hidden" />
+
+      {!visible && (
+        <button
+          type="button"
+          onClick={() => {
+            setVisible(true);
+            setCollapsed(false);
+          }}
+          aria-label="فتح المشغّل الصوتي"
+          className="pointer-events-auto fixed bottom-5 left-5 z-[75] flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-background/85 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.55)] backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_28px_-6px_rgba(0,0,0,0.6),0_0_22px_-4px_rgba(3,234,188,0.45)] active:scale-95"
+        >
+          <div className="pointer-events-none flex h-full w-full items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#3a3a42,#101014_70%)]">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-[#0263D1]/80">
+              <Music className="h-3 w-3 text-zinc-950" />
+            </div>
+          </div>
+        </button>
+      )}
 
       {visible && (
-        <div dir="rtl" className="pointer-events-none fixed inset-0 z-[75]">
+        <div dir="rtl" className="pointer-events-none fixed inset-0 z-[75] player-wrap">
           {collapsed ? (
             <button
               type="button"
@@ -244,17 +297,16 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
               }}
               onPointerDown={onIconPointerDown}
               onPointerMove={onPointerMove}
-              onPointerUp={endDrag}
-              onPointerCancel={endDrag}
+              onPointerUp={endIconDrag}
+              onPointerCancel={endIconDrag}
               aria-label="فتح المشغّل الصوتي"
-              className="pointer-events-auto absolute left-0 top-0 flex h-12 w-12 cursor-grab touch-none select-none items-center justify-center rounded-full bg-background/90 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.55),0_0_24px_-4px_rgba(3,234,188,0.45)] backdrop-blur-2xl animate-fade-in active:cursor-grabbing"
+              className="pointer-events-auto absolute left-0 top-0 flex h-10 w-10 cursor-grab touch-none select-none items-center justify-center rounded-full animate-fade-in active:cursor-grabbing"
               style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
             >
-              <div className={`pointer-events-none flex h-full w-full items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#3a3a42,#101014_70%)] ${playing ? "animate-disc-spin" : ""}`}>
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-[#0263D1]/80">
-                  <Music className="h-3.5 w-3.5 text-zinc-950" />
-                </div>
-              </div>
+              <Music
+                className="pointer-events-none h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110"
+                style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 12px rgba(3,234,188,0.35))" }}
+              />
               {playing && (
                 <span className="pointer-events-none absolute -bottom-0.5 -left-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary shadow-[0_0_10px_rgba(3,234,188,0.9)]">
                   <span className="flex h-3 items-end gap-[2px]" aria-hidden>
@@ -308,8 +360,14 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
                   </div>
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-xs font-bold text-foreground">
-                    {current ? current.name : "المشغّل الصوتي"}
+                  <p className="flex items-center gap-1.5 truncate text-xs font-bold text-foreground">
+                    <span className="truncate">{current ? current.name : "المشغّل الصوتي"}</span>
+                    {current?.fromVideo && (
+                      <span className="flex shrink-0 items-center gap-0.5 rounded-full bg-fuchsia-500/15 px-1.5 py-[1px] text-[9px] font-medium text-fuchsia-400">
+                        <Film className="h-2.5 w-2.5" />
+                        مستخرج من فيديو
+                      </span>
+                    )}
                   </p>
                   <p className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                     {current ? (
@@ -330,7 +388,7 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
                         "متوقف"
                       )
                     ) : (
-                      "أضف موسيقاك واستمع أثناء استكشاف المجرّة"
+                      "أضف موسيقى أو اختر فيديو لاستخراج صوته"
                     )}
                   </p>
                 </div>
@@ -399,6 +457,23 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
               </div>
             )}
           </div>
+          )}
+          {dragging && (
+            <div
+              ref={closeRef}
+              dir="ltr"
+              className={`pointer-events-none absolute inset-x-0 bottom-4 flex h-24 items-center justify-center transition-opacity ${overClose ? "opacity-100" : "opacity-80"}`}
+            >
+              <div
+                className={`flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed transition-all ${
+                  overClose
+                    ? "scale-110 border-red-400 bg-red-500/30 text-red-300 shadow-[0_0_26px_rgba(239,68,68,0.65)]"
+                    : "border-red-400/40 bg-red-500/10 text-red-400/70"
+                }`}
+              >
+                <X className="h-7 w-7" />
+              </div>
+            </div>
           )}
         </div>
       )}
