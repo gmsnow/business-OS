@@ -7,7 +7,7 @@ import {
   Package, ShoppingCart, Receipt, Wallet, Monitor, BarChart3,
   Shield, Globe, ArrowLeft, CheckCircle2, Sparkles, Zap, Users,
   LayoutDashboard, Settings, TrendingUp, Star, CreditCard, Boxes,
-  Store, Home, LayoutGrid, ListChecks, Rocket, Menu, X, ChevronRight,
+  Store, Home, LayoutGrid, ListChecks, Rocket, ChevronRight,
 } from "lucide-react";
 import ScrollReveal from "@/components/landing/scroll-reveal";
 import TiltCard from "@/components/landing/tilt-card";
@@ -185,18 +185,18 @@ function HomeView() {
       {/* Live 3D wallpaper — the galaxy orb behind */}
       <Hero3D />
 
-      <div className="relative z-10 pointer-events-none mx-auto my-auto w-full max-w-7xl select-none px-6 pt-24 pb-10 lg:pt-28 animate-fade-in-up">
+      <div className="relative z-10 pointer-events-none mx-auto my-auto w-full max-w-7xl select-none px-6 pt-16 pb-28 sm:pt-24 lg:pt-28 animate-fade-in-up">
         <div className="grid items-center gap-12">
           <div className="text-center">
             <ScrollReveal delay={0} direction="up" distance={40}>
-              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm sm:mb-8">
                 <Sparkles className="h-4 w-4" />
                 منصة إدارة أعمال احترافية
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={100} direction="up" distance={50}>
-              <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[1.12] tracking-tight sm:text-6xl md:text-[4.8rem]" style={{ perspective: "1000px" }}>
+              <h1 className="mx-auto max-w-4xl text-[2.6rem] font-extrabold leading-[1.15] tracking-tight sm:text-6xl md:text-[4.8rem]" style={{ perspective: "1000px" }}>
                 {mounted ? (
                   <SplitText text="كل ما تحتاجه لإدارة" className="inline" />
                 ) : (
@@ -218,14 +218,14 @@ function HomeView() {
             </ScrollReveal>
 
             <ScrollReveal delay={200} direction="up" distance={50}>
-              <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:mt-8 md:text-xl">
                 نظام متكامل لإدارة متجرك أو مؤسستك — مخزون، مبيعات، مشتريات، مالية،
                 ونقاط بيع. متعدد المستأجرين ويدعم الهوية البصرية الخاصة بك.
               </p>
             </ScrollReveal>
 
             <ScrollReveal delay={300} direction="up" distance={40}>
-              <div className="pointer-events-auto mt-12 flex items-center justify-center">
+              <div className="pointer-events-auto mt-8 flex items-center justify-center sm:mt-12">
                 <MagneticButton strength={0.15}>
                   <Link href="/systems" className="group relative inline-flex items-center gap-2.5 rounded-2xl bg-primary px-10 py-4 text-base font-bold text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:shadow-2xl hover:shadow-primary/30 hover:brightness-110 active:scale-[0.98]">
                     <Zap className="h-5 w-5" />
@@ -238,7 +238,7 @@ function HomeView() {
             </ScrollReveal>
 
             <ScrollReveal delay={400} direction="up" distance={30}>
-              <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground sm:mt-14">
                 {["مجاني للبدء", "بدون بطاقة ائتمان", "إعداد في دقائق"].map((t) => (
                   <span key={t} className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -634,20 +634,6 @@ export default function HomePage() {
           <ChevronRight className={`h-4 w-4 transition-transform duration-500 ${navOpen ? "rotate-180" : ""}`} />
         </button>
 
-        {/* Mobile: floating menu button — toggles the bottom dock */}
-        <button
-          type="button"
-          aria-label={navOpen ? "إخفاء القائمة" : "إظهار القائمة"}
-          onClick={() => setNavOpen(!navOpen)}
-          className={`fixed right-5 z-[60] flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.08] text-foreground shadow-xl shadow-black/30 backdrop-blur-xl transition-all duration-500 hover:scale-105 active:scale-95 lg:hidden ${
-            navOpen
-              ? "bottom-[6.5rem] border-transparent bg-primary text-primary-foreground"
-              : "bottom-5"
-          }`}
-        >
-          {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-
         {/* Desktop: swipe left→right from the left edge reveals the rail */}
         <div
           className="pointer-events-auto fixed inset-y-0 left-0 z-40 hidden w-8 lg:block"
@@ -655,29 +641,6 @@ export default function HomePage() {
           onPointerUp={(e) => {
             const s = gestureStart.current;
             if (s && e.clientX - s.x > 48) setNavOpen(true);
-            gestureStart.current = null;
-          }}
-        />
-
-        {/* Mobile: swipe up from the bottom edge reveals the dock.
-            Non-swipe taps in this strip are forwarded to the element underneath
-            so footer content near the screen bottom stays tappable. */}
-        <div
-          className="pointer-events-auto fixed inset-x-0 bottom-0 z-40 h-8 lg:hidden"
-          onPointerDown={(e) => { gestureStart.current = { x: e.clientX, y: e.clientY }; }}
-          onPointerUp={(e) => {
-            const s = gestureStart.current;
-            if (s && s.y - e.clientY > 48) {
-              setNavOpen(true);
-            } else if (s) {
-              const zone = e.currentTarget as HTMLElement;
-              zone.style.pointerEvents = "none";
-              const el = document.elementFromPoint(e.clientX, e.clientY);
-              zone.style.pointerEvents = "auto";
-              if (el && el !== zone) {
-                el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
-              }
-            }
             gestureStart.current = null;
           }}
         />
@@ -745,14 +708,20 @@ export default function HomePage() {
           </nav>
         </div>
 
-        {/* Mobile: horizontal 3D dock at the bottom */}
-        <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-4 lg:hidden">
-          <nav className={`pointer-events-auto relative flex max-w-full items-center gap-1 overflow-x-auto rounded-full border border-white/10 bg-background/95 py-2 pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-all duration-500 ease-out [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${navOpen ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-[140%]"}`}>
+        {/* ═══════════════ MOBILE NAV — always-visible bottom dock ═══════════════ */}
+        {/* Fixed full-width bottom bar. Mounted directly under <main> (no transformed
+            / overflow-hidden / opacity ancestor that could trap it). z-[70] puts it
+            above the hero 3D (z-0), content (z-10), gesture zones (z-40) and the
+            desktop rail (z-50). Safe-area aware for gesture/nav bars. */}
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] lg:hidden">
+          <nav className="pointer-events-auto relative flex w-full items-center gap-1 overflow-x-auto border-t border-white/10 bg-background/95 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <Link href="/" className="flex shrink-0 items-center rounded-xl px-1.5 py-1 transition-colors hover:bg-white/10" title="Business OS">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden shadow-md shadow-primary/30">
                 <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
               </div>
             </Link>
+
+            <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
 
             {NAV_PAGES.map((p) => {
               const active = page === p.key;
@@ -761,7 +730,7 @@ export default function HomePage() {
                   key={p.key}
                   type="button"
                   onClick={() => { setPage(p.key); setNavOpen(false); }}
-                  className={`group relative flex shrink-0 flex-col items-center justify-center rounded-full px-3 py-2 text-muted-foreground outline-none transition-all duration-500 focus:outline-none focus-visible:outline-none [-webkit-tap-highlight-color:transparent] ${
+                  className={`group flex shrink-0 flex-col items-center justify-center rounded-full px-3 py-2 text-muted-foreground outline-none transition-all duration-500 focus:outline-none focus-visible:outline-none [-webkit-tap-highlight-color:transparent] ${
                     active
                       ? "bg-primary/20 text-primary shadow-[0_0_18px_rgba(3,234,188,0.35),inset_0_1px_0_rgba(255,255,255,0.15)]"
                       : "hover:bg-white/[0.07] hover:text-foreground active:scale-95"
@@ -774,6 +743,8 @@ export default function HomePage() {
                 </button>
               );
             })}
+
+            <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
 
             <Link
               href="/signup"
