@@ -620,39 +620,6 @@ export default function HomePage() {
     <div className="noise-overlay">
       <main className="min-h-screen bg-background text-foreground" dir="rtl">
 
-        {/* ═══════════════ Mobile top header — brand + menu toggle ═══════════════ */}
-        <header className="fixed inset-x-0 top-0 z-[70] pt-[env(safe-area-inset-top)] lg:hidden">
-          <div className="flex h-14 min-h-0 items-center justify-between gap-3 border-b border-white/10 bg-background/80 px-4 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/70">
-            <Link href="/" className="flex min-w-0 items-center gap-2.5" aria-label="Business OS">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-md shadow-primary/30">
-                <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
-              </div>
-              <span className="truncate text-sm font-bold">Business OS</span>
-            </Link>
-
-            <div className="flex shrink-0 items-center gap-2">
-              <Link
-                href="/signup"
-                className="inline-flex items-center rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 hover:brightness-110 active:scale-[0.97]"
-              >
-                إنشاء حساب
-              </Link>
-              <button
-                type="button"
-                aria-label={navOpen ? "إخفاء القائمة" : "إظهار القائمة"}
-                onClick={() => setNavOpen(!navOpen)}
-                className={`flex h-11 w-11 items-center justify-center rounded-xl border transition-colors duration-300 active:scale-95 ${
-                  navOpen
-                    ? "border-primary/40 bg-primary/15 text-primary"
-                    : "border-white/10 bg-white/[0.08] text-foreground"
-                }`}
-              >
-                {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
-            </div>
-          </div>
-        </header>
-
         {/* ═══════════════ Nav toggles & gesture zones ═══════════════ */}
 
         {/* Desktop: slim tab at the left edge — toggles the 3D rail */}
