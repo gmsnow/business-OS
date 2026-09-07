@@ -1,4 +1,8 @@
 import { installSerwist } from "@serwist/sw";
 
-// @ts-expect-error __SW_MANIFEST injected by @serwist/next
-installSerwist({ precacheEntries: self.__SW_MANIFEST });
+installSerwist({
+  // @ts-expect-error __SW_MANIFEST injected by @serwist/next
+  precacheEntries: self.__SW_MANIFEST,
+  skipWaiting: true,
+  clientsClaim: true,
+});
