@@ -36,14 +36,13 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
   const closeRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
   const [overClose, setOverClose] = useState(false);
-  const [pos, setPos] = useState<{ x: number; y: number }>({ x: 24, y: 160 });
+  const [pos, setPos] = useState<{ x: number; y: number }>({ x: 16, y: 16 });
 
   /* The lazy initializer can't be trusted after SSR hydration (the server-rendered
      value wins), so nudge the floating icon into its starting spot once, on the
      client, right before paint. */
   useLayoutEffect(() => {
-    const w = Math.min(window.innerWidth - 24, 448);
-    setPos({ x: Math.max(12, window.innerWidth - w - 24), y: window.innerHeight - 180 });
+    setPos({ x: 16, y: 16 });
   }, []);
 
   useEffect(() => {
@@ -228,7 +227,8 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
       /* Dropping the note on the trash bin stops playback but keeps the
          launcher icon around. */
       stop();
-      setCollapsed(true);
+      setVisible(false);
+      setCollapsed(false);
     }
   };
 
@@ -284,7 +284,7 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
             onPointerUp={endIconDrag}
             onPointerCancel={endIconDrag}
             aria-label="فتح المشغّل الصوتي"
-            className={`absolute left-0 top-0 flex h-10 w-10 cursor-grab touch-none select-none items-center justify-center rounded-full transition-all duration-500 ease-out active:cursor-grabbing ${
+            className={`pointer-events-auto absolute left-0 top-0 flex h-10 w-10 cursor-grab touch-none select-none items-center justify-center rounded-full transition-all duration-500 ease-out active:cursor-grabbing ${
               collapsed ? "opacity-100 scale-100" : "pointer-events-none opacity-0 scale-75"
             }`}
             style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
@@ -320,7 +320,7 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
             onPointerCancel={endDrag}
-            className={`absolute left-0 top-0 w-[min(calc(100vw-1.5rem),28rem)] select-none overflow-hidden rounded-[22px] border border-white/10 bg-background/90 shadow-[0_10px_40px_-8px_rgba(3,234,188,0.25),0_20px_44px_-12px_rgba(0,0,0,0.6)] backdrop-blur-2xl cursor-grab active:cursor-grabbing touch-none transition-all duration-500 ease-out ${
+            className={`pointer-events-auto absolute left-0 top-0 w-[min(calc(100vw-1.5rem),28rem)] select-none overflow-hidden rounded-[22px] border border-white/10 bg-background/90 shadow-[0_10px_40px_-8px_rgba(3,234,188,0.25),0_20px_44px_-12px_rgba(0,0,0,0.6)] backdrop-blur-2xl cursor-grab active:cursor-grabbing touch-none transition-all duration-500 ease-out ${
               collapsed ? "pointer-events-none opacity-0 scale-90" : "opacity-100 scale-100"
             }`}
             style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
@@ -465,6 +465,23 @@ export default forwardRef<MusicPlayerHandle, object>(function MusicPlayer(_props
             </div>
           )}
         </div>
+      )}
+
+      {/* Reopen launcher — shown only once the note has been dropped to close.
+          The collapsed icon is the everyday entry point; this is the escape hatch
+          after a full close, mirrored left so it won't fight the dock's rail. */}
+      {!visible && (
+        <button
+          type="button"
+          aria-label="فتح المشغّل الصوتي"
+          className="pointer-events-auto fixed bottom-20 left-4 z-[75] flex h-10 w-10 items-center justify-center rounded-full border border-primary/25 bg-background/90 shadow-[0_4px_16px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-transform duration-300 hover:scale-105 active:scale-95 outline-none [-webkit-tap-highlight-color:transparent]"
+          onClick={() => {
+            setVisible(true);
+            setCollapsed(false);
+          }}
+        >
+          <Music className="h-5 w-5 text-primary" />
+        </button>
       )}
     </>
   );
