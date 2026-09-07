@@ -627,7 +627,7 @@ export default function HomePage() {
           type="button"
           aria-label={navOpen ? "إخفاء القائمة" : "إظهار القائمة"}
           onClick={() => setNavOpen(!navOpen)}
-          className={`fixed top-1/2 z-[60] hidden -translate-y-1/2 items-center justify-center rounded-r-xl border border-l-0 border-white/10 bg-white/[0.06] text-muted-foreground shadow-lg shadow-black/20 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:text-foreground lg:flex ${
+          className={`fixed top-1/2 z-[60] hidden -translate-y-1/2 items-center justify-center rounded-r-xl border border-l-0 border-white/10 bg-white/[0.06] text-muted-foreground shadow-lg shadow-black/20 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:text-foreground min-[601px]:flex ${
             navOpen ? "left-[5.5rem] h-14 w-6" : "left-0 h-20 w-5"
           }`}
         >
@@ -636,7 +636,7 @@ export default function HomePage() {
 
         {/* Desktop: swipe left→right from the left edge reveals the rail */}
         <div
-          className="pointer-events-auto fixed inset-y-0 left-0 z-40 hidden w-8 lg:block"
+          className="pointer-events-auto fixed inset-y-0 left-0 z-40 hidden w-8 min-[601px]:block"
           onPointerDown={(e) => { gestureStart.current = { x: e.clientX, y: e.clientY }; }}
           onPointerUp={(e) => {
             const s = gestureStart.current;
@@ -647,7 +647,7 @@ export default function HomePage() {
 
         {/* ═══════════════ NAVBAR — swaps the single-page views ═══════════════ */}
         {/* Desktop: vertical 3D rail on the left */}
-        <div className="pointer-events-none fixed left-4 top-1/2 z-50 hidden -translate-y-1/2 lg:block [perspective:1200px]">
+        <div className="pointer-events-none fixed left-4 top-1/2 z-50 hidden min-[601px]:block -translate-y-1/2 [perspective:1200px]">
           <nav className={`pointer-events-auto relative flex flex-col items-center gap-0.5 rounded-[28px] border border-white/10 bg-background/95 px-1.5 py-2.5 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-all duration-500 ease-out ${navOpen ? "opacity-100 translate-x-0" : "pointer-events-none opacity-0 -translate-x-[120px]"}`}>
             {/* Brand */}
             <Link href="/" className="flex shrink-0 items-center gap-2 rounded-xl px-2 py-1.5 transition-colors hover:bg-white/10" title="Business OS">
@@ -713,8 +713,8 @@ export default function HomePage() {
             / overflow-hidden / opacity ancestor that could trap it). z-[70] puts it
             above the hero 3D (z-0), content (z-10), gesture zones (z-40) and the
             desktop rail (z-50). Safe-area aware for gesture/nav bars. */}
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] lg:hidden">
-          <nav className="pointer-events-auto relative flex w-full items-center gap-1 overflow-x-auto border-t border-white/10 bg-background/95 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] hidden max-[600px]:block">
+          <nav className="pointer-events-auto relative flex w-full items-center gap-1 overflow-x-auto border-t border-white/10 bg-background/95 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
             <Link href="/" className="flex shrink-0 items-center rounded-xl px-1.5 py-1 transition-colors hover:bg-white/10" title="Business OS">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden shadow-md shadow-primary/30">
                 <img src="/icons/BO.png" alt="Business OS" className="h-full w-full object-contain" />
@@ -756,7 +756,7 @@ export default function HomePage() {
         </div>
 
         {/* ═══════════════ the single view — swapped, scrolls if content is big ═══════════════ */}
-        <div className={page === "home" ? "h-screen overflow-hidden" : "min-h-screen pb-24 lg:pb-0"} key={page}>
+        <div className={`view-enter ${page === "home" ? "h-screen overflow-hidden" : "min-h-screen pb-24 min-[601px]:pb-0"}`} key={page}>
           {page === "home" && <HomeView />}
           {page === "features" && <FeaturesView />}
           {page === "stats" && <StatsView />}

@@ -83,7 +83,7 @@ export default function Hero3D() {
       const client = new window.Sketchfab(iframeRef.current);
       client.init(MODEL_UID, {
         autostart: 1,
-        autospin: 0.2,
+        autospin: -0.2,
         ui_infos: 0,
         ui_controls: 0,
         ui_stop: 0,
