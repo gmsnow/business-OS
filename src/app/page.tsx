@@ -699,20 +699,6 @@ export default function HomePage() {
 
             <div className="my-2 h-px w-8 bg-white/10" />
 
-            {/* Music player */}
-            <button
-              type="button"
-              onClick={() => musicRef.current?.open()}
-              title="المشغّل الصوتي"
-              aria-label="فتح المشغّل الصوتي"
-              className="group flex flex-col items-center justify-center rounded-full px-2 py-1.5 text-muted-foreground outline-none transition-all duration-300 hover:bg-white/[0.07] hover:text-primary active:scale-95"
-            >
-              <Music className="h-5 w-5 transition-all duration-300 group-hover:text-primary" />
-              <span className="mt-0 max-w-[2.6rem] truncate text-[9px] font-semibold leading-tight text-muted-foreground opacity-80 group-hover:text-primary">
-                موسيقى
-              </span>
-            </button>
-
             {/* Auth */}
             <div className="flex shrink-0 flex-col items-center gap-1.5">
               <Link
@@ -773,20 +759,6 @@ export default function HomePage() {
 
             <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
 
-            <button
-              type="button"
-              onClick={() => musicRef.current?.pick()}
-              aria-label="إضافة موسيقى من الجهاز وفتح المشغّل"
-              className="group flex shrink-0 flex-col items-center justify-center rounded-full px-3 py-2 text-muted-foreground outline-none transition-all duration-300 hover:bg-white/[0.07] hover:text-foreground active:scale-95 [-webkit-tap-highlight-color:transparent]"
-            >
-              <Music className="h-5 w-5 transition-all duration-300 group-hover:text-primary" />
-              <span className="mt-0.5 max-w-[3rem] truncate text-[9px] font-semibold leading-tight text-muted-foreground opacity-80 group-hover:text-primary">
-                موسيقى
-              </span>
-            </button>
-
-            <div className="mx-1 h-6 w-px shrink-0 bg-white/10" />
-
             {NAV_PAGES.map((p) => {
               const active = page === p.key;
               return (
@@ -843,6 +815,23 @@ export default function HomePage() {
           />
         </div>
       </main>
+
+      {/* ═══════════════ Music — floating icon launcher ═══════════════ */}
+      {/* Not part of the rail/dock navigation: a small always-floating disc that
+          opens the draggable player. On mobile it clears the dock's height. */}
+      <button
+        type="button"
+        onClick={() => musicRef.current?.open()}
+        aria-label="فتح المشغّل الصوتي"
+        title="المشغّل الصوتي"
+        className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+6rem)] z-[72] flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-background/90 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.55),0_0_24px_-4px_rgba(3,234,188,0.45)] backdrop-blur-2xl transition-all duration-300 hover:scale-105 hover:shadow-[0_10px_34px_-8px_rgba(0,0,0,0.6),0_0_30px_-4px_rgba(3,234,188,0.65)] active:scale-95 outline-none [-webkit-tap-highlight-color:transparent] lg:right-6 lg:bottom-6"
+      >
+        <div className="pointer-events-none flex h-full w-full items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#3a3a42,#101014_70%)]">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-[#0263D1]/80">
+            <Music className="h-3.5 w-3.5 text-zinc-950" />
+          </div>
+        </div>
+      </button>
 
       <AiChatModal open={aiOpen} onClose={() => setAiOpen(false)} />
       <MusicPlayer ref={musicRef} />
