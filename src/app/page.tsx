@@ -17,6 +17,7 @@ import MagneticButton from "@/components/landing/magnetic-button";
 import TextScramble from "@/components/landing/text-scramble";
 import GlowCard from "@/components/landing/glow-card";
 import SplitText from "@/components/landing/split-text";
+import ViewTransition from "@/components/landing/view-transition";
 
 /* ── 3D Hero (lazy-loaded, excluded from server render) ─── */
 const Hero3D = dynamic(() => import("@/components/landing/hero-3d"), {
@@ -178,25 +179,28 @@ function SectionHeading({ badge, title, desc }: { badge: string; title: React.Re
 function HomeView() {
   const mounted = useIsMounted();
   return (
-    <section className="relative isolate flex h-full overflow-hidden">
+    <section className="relative isolate flex h-screen overflow-hidden">
       <FloatingParticles />
       <HeroGlow />
 
       {/* Live 3D wallpaper — the galaxy orb behind */}
       <Hero3D />
 
-      <div className="relative z-10 pointer-events-none mx-auto my-auto w-full max-w-7xl select-none px-6 pt-16 pb-28 sm:pt-24 lg:pt-28 animate-fade-in-up">
+      {/* Soft dark vignette behind the copy so text stays readable over the bright orb */}
+      <div className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(ellipse_at_center,rgba(2,6,23,0.5)_0%,rgba(2,6,23,0.28)_50%,transparent_78%)]" />
+
+      <div className="relative z-10 pointer-events-none mx-auto my-auto w-full max-w-7xl select-none px-6 pt-14 pb-28 sm:pt-24 lg:pt-28 animate-fade-in-up">
         <div className="grid items-center gap-12">
           <div className="text-center">
             <ScrollReveal delay={0} direction="up" distance={40}>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm sm:mb-8">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm sm:mb-8">
                 <Sparkles className="h-4 w-4" />
                 منصة إدارة أعمال احترافية
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={100} direction="up" distance={50}>
-              <h1 className="mx-auto max-w-4xl text-[2.6rem] font-extrabold leading-[1.15] tracking-tight sm:text-6xl md:text-[4.8rem]" style={{ perspective: "1000px" }}>
+              <h1 className="mx-auto max-w-4xl text-[2.3rem] font-extrabold leading-[1.15] tracking-tight [filter:drop-shadow(0_2px_12px_rgba(2,6,23,0.75))_drop-shadow(0_1px_3px_rgba(2,6,23,0.6))] sm:text-6xl md:text-[4.8rem]" style={{ perspective: "1000px" }}>
                 {mounted ? (
                   <SplitText text="كل ما تحتاجه لإدارة" className="inline" />
                 ) : (
@@ -218,7 +222,7 @@ function HomeView() {
             </ScrollReveal>
 
             <ScrollReveal delay={200} direction="up" distance={50}>
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:mt-8 md:text-xl">
+              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-foreground/85 [filter:drop-shadow(0_1px_10px_rgba(2,6,23,0.85))] sm:mt-8 md:text-xl">
                 نظام متكامل لإدارة متجرك أو مؤسستك — مخزون، مبيعات، مشتريات، مالية،
                 ونقاط بيع. متعدد المستأجرين ويدعم الهوية البصرية الخاصة بك.
               </p>
@@ -238,7 +242,7 @@ function HomeView() {
             </ScrollReveal>
 
             <ScrollReveal delay={400} direction="up" distance={30}>
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground sm:mt-14">
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-foreground/80 [filter:drop-shadow(0_1px_8px_rgba(2,6,23,0.85))] sm:mt-14">
                 {["مجاني للبدء", "بدون بطاقة ائتمان", "إعداد في دقائق"].map((t) => (
                   <span key={t} className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -647,7 +651,7 @@ export default function HomePage() {
 
         {/* ═══════════════ NAVBAR — swaps the single-page views ═══════════════ */}
         {/* Desktop: vertical 3D rail on the left */}
-        <div className="pointer-events-none fixed left-4 top-1/2 z-50 hidden min-[601px]:block -translate-y-1/2 [perspective:1200px]">
+        <div className="pointer-events-none fixed left-4 top-1/2 z-50 hidden min-[601px]:block rail-wrap -translate-y-1/2 [perspective:1200px]">
           <nav className={`pointer-events-auto relative flex flex-col items-center gap-0.5 rounded-[28px] border border-white/10 bg-background/95 px-1.5 py-2.5 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-all duration-500 ease-out ${navOpen ? "opacity-100 translate-x-0" : "pointer-events-none opacity-0 -translate-x-[120px]"}`}>
             {/* Brand */}
             <Link href="/" className="flex shrink-0 items-center gap-2 rounded-xl px-2 py-1.5 transition-colors hover:bg-white/10" title="Business OS">
@@ -713,7 +717,7 @@ export default function HomePage() {
             / overflow-hidden / opacity ancestor that could trap it). z-[70] puts it
             above the hero 3D (z-0), content (z-10), gesture zones (z-40) and the
             desktop rail (z-50). Safe-area aware for gesture/nav bars. */}
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] hidden max-[600px]:block">
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] dock-wrap hidden max-[600px]:block">
           <nav className="pointer-events-auto relative flex w-full items-center gap-1 overflow-x-auto border-t border-white/10 bg-background/95 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pl-2 pr-3 shadow-[0_-4px_24px_rgba(3,234,188,0.10),0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
             <Link href="/" className="flex shrink-0 items-center rounded-xl px-1.5 py-1 transition-colors hover:bg-white/10" title="Business OS">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden shadow-md shadow-primary/30">
@@ -755,15 +759,28 @@ export default function HomePage() {
           </nav>
         </div>
 
-        {/* ═══════════════ the single view — swapped, scrolls if content is big ═══════════════ */}
-        <div className={`view-enter ${page === "home" ? "h-screen overflow-hidden" : "min-h-screen pb-24 min-[601px]:pb-0"}`} key={page}>
-          {page === "home" && <HomeView />}
-          {page === "features" && <FeaturesView />}
-          {page === "stats" && <StatsView />}
-          {page === "highlights" && <HighlightsView />}
-          {page === "testimonials" && <TestimonialsView />}
-          {page === "how" && <HowView />}
-          {page === "cta" && <CtaView />}
+      {/* ═══════════════ the single view — swapped with a 3D transition ═══════════════ */}
+        <div className={`${page === "home" ? "h-screen overflow-hidden" : "min-h-screen pb-24 min-[601px]:pb-0"}`}>
+          <ViewTransition
+            page={page}
+            render={(p) =>
+              p === "home" ? (
+                <HomeView />
+              ) : p === "features" ? (
+                <FeaturesView />
+              ) : p === "stats" ? (
+                <StatsView />
+              ) : p === "highlights" ? (
+                <HighlightsView />
+              ) : p === "testimonials" ? (
+                <TestimonialsView />
+              ) : p === "how" ? (
+                <HowView />
+              ) : (
+                <CtaView />
+              )
+            }
+          />
         </div>
       </main>
     </div>

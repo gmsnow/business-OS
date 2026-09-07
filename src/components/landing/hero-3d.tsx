@@ -7,7 +7,7 @@
  * Model: https://sketchfab.com/3d-models/need-some-space-d6521362b37b48e3a82bce4911409303
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const MODEL_UID = "d6521362b37b48e3a82bce4911409303";
 const API_SCRIPT =
@@ -53,10 +53,19 @@ declare global {
 export default function Hero3D() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const apiRef = useRef<SketchfabApi | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let disposed = false;
     let poll: number | undefined;
+    let failSafe: number | undefined;
+
+    const hideSpinner = () => {
+      if (failSafe !== undefined) window.clearTimeout(failSafe);
+      setLoading(false);
+    };
+
+    failSafe = window.setTimeout(hideSpinner, 20000);
 
     const startPoller = (api: SketchfabApi, initDist: number) => {
       if (initDist <= 0 || disposed) return;
@@ -95,6 +104,7 @@ export default function Hero3D() {
           apiRef.current = api;
           api.start(() => {
             api.addEventListener("viewerready", () => {
+              hideSpinner();
               window.setTimeout(() => {
                 api.getCameraLookAt((err, camera) => {
                   if (err || !camera) return;
@@ -117,7 +127,7 @@ export default function Hero3D() {
             });
           });
         },
-        error: () => undefined,
+        error: () => hideSpinner(),
       });
     };
 
@@ -142,6 +152,7 @@ export default function Hero3D() {
       return () => {
         disposed = true;
         if (poll !== undefined) window.clearInterval(poll);
+        if (failSafe !== undefined) window.clearTimeout(failSafe);
         script.remove();
       };
     }
@@ -149,6 +160,7 @@ export default function Hero3D() {
     return () => {
       disposed = true;
       if (poll !== undefined) window.clearInterval(poll);
+      if (failSafe !== undefined) window.clearTimeout(failSafe);
     };
   }, []);
 
@@ -163,6 +175,20 @@ export default function Hero3D() {
         execution-while-out-of-viewport="true"
         execution-while-not-rendered="true"
       />
+      {loading && (
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+          <div className="flex items-center gap-3 rounded-full border border-primary/20 bg-background/80 px-5 py-2.5 shadow-lg shadow-primary/10 backdrop-blur-md">
+            <span className="relative flex h-8 w-8 items-center justify-center">
+              <span className="absolute inset-0 animate-spin rounded-full border-2 border-primary/25 border-t-primary" />
+              <span className="absolute inset-1.5 animate-spin rounded-full border border-primary/50 border-b-primary [animation-direction:reverse]" />
+              <span className="relative h-2 w-2 animate-pulse rounded-full bg-primary" />
+            </span>
+            <span className="whitespace-nowrap text-sm font-medium text-primary">
+              جاري تحميل المجره
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

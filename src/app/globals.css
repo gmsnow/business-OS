@@ -286,7 +286,7 @@ body {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.view-enter { animation: view-in 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -332,6 +332,13 @@ body {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+@keyframes page-exit-3d {
+  to { opacity: 0; transform: perspective(1200px) rotateX(18deg) scale(0.9) translateY(-28px); }
+}
+@keyframes page-enter-3d {
+  from { opacity: 0; transform: perspective(1200px) rotateX(-14deg) scale(0.94) translateY(36px); }
+  to   { opacity: 1; transform: perspective(1200px) rotateX(0deg) scale(1) translateY(0); }
+}
 
 .animate-fade-in-up   { animation: fade-in-up 0.7s ease-out both; }
 .animate-fade-in      { animation: fade-in 0.6s ease-out both; }
@@ -342,6 +349,10 @@ body {
 .animate-orbit        { animation: orbit 20s linear infinite; }
 .animate-orbit-reverse{ animation: orbit-reverse 14s linear infinite; }
 .animate-marquee      { animation: marquee 30s linear infinite; }
+
+/* Page transitions — 3D flip out then flip in */
+.animate-page-exit-3d  { animation: page-exit-3d 0.34s ease-in both; }
+.animate-page-enter-3d { animation: page-enter-3d 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
@@ -489,7 +500,7 @@ body {
   }
 }
 @media (pointer: coarse) {
-  .pointer-events-none.fixed { display: none !important; }
+  .pointer-events-none.fixed:not(.dock-wrap):not(.rail-wrap) { display: none !important; }
 }
 
 /* Section divider wave */
