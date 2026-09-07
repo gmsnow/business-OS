@@ -194,14 +194,14 @@ function HomeView() {
         <div className="grid items-center gap-12">
           <div className="text-center">
             <ScrollReveal delay={0} direction="up" distance={40}>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm sm:mb-8">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-sm font-medium text-primary backdrop-blur-sm sm:mb-8">
                 <Sparkles className="h-4 w-4" />
                 منصة إدارة أعمال احترافية
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={100} direction="up" distance={50}>
-              <h1 className="mx-auto max-w-4xl text-[2.3rem] font-extrabold leading-[1.15] tracking-tight [filter:drop-shadow(0_2px_12px_rgba(2,6,23,0.75))_drop-shadow(0_1px_3px_rgba(2,6,23,0.6))] sm:text-6xl md:text-[4.8rem]" style={{ perspective: "1000px" }}>
+              <h1 className="mx-auto max-w-4xl text-[2.3rem] font-extrabold leading-[1.3] tracking-tight [filter:drop-shadow(0_2px_12px_rgba(2,6,23,0.75))_drop-shadow(0_1px_3px_rgba(2,6,23,0.6))] sm:text-6xl md:text-[4.8rem]" style={{ perspective: "1000px" }}>
                 {mounted ? (
                   <SplitText text="كل ما تحتاجه لإدارة" className="inline" />
                 ) : (
@@ -223,14 +223,14 @@ function HomeView() {
             </ScrollReveal>
 
             <ScrollReveal delay={200} direction="up" distance={50}>
-              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-foreground/85 [filter:drop-shadow(0_1px_10px_rgba(2,6,23,0.85))] sm:mt-8 md:text-xl">
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-foreground/85 [filter:drop-shadow(0_1px_10px_rgba(2,6,23,0.85))] sm:mt-8 md:text-xl">
                 نظام متكامل لإدارة متجرك أو مؤسستك — مخزون، مبيعات، مشتريات، مالية،
                 ونقاط بيع. متعدد المستأجرين ويدعم الهوية البصرية الخاصة بك.
               </p>
             </ScrollReveal>
 
             <ScrollReveal delay={300} direction="up" distance={40}>
-              <div className="pointer-events-auto mt-6 flex items-center justify-center sm:mt-12">
+              <div className="pointer-events-auto mt-5 flex items-center justify-center sm:mt-12">
                 <MagneticButton strength={0.15}>
                   <Link href="/systems" className="group relative inline-flex items-center gap-2.5 rounded-2xl bg-primary px-10 py-4 text-base font-bold text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:shadow-2xl hover:shadow-primary/30 hover:brightness-110 active:scale-[0.98]">
                     <Zap className="h-5 w-5" />
@@ -243,7 +243,7 @@ function HomeView() {
             </ScrollReveal>
 
             <ScrollReveal delay={400} direction="up" distance={30}>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-foreground/80 [filter:drop-shadow(0_1px_8px_rgba(2,6,23,0.85))] sm:mt-14">
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-foreground/80 [filter:drop-shadow(0_1px_8px_rgba(2,6,23,0.85))] sm:mt-14">
                 {["مجاني للبدء", "بدون بطاقة ائتمان", "إعداد في دقائق"].map((t) => (
                   <span key={t} className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-primary" />
